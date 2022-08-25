@@ -1,3 +1,4 @@
+use clap::Parser;
 use thiserror::Error;
 use winit::{
     error::OsError,
@@ -5,6 +6,14 @@ use winit::{
     event_loop::EventLoop,
     window::{CursorIcon, WindowBuilder},
 };
+
+#[derive(Parser, Debug)]
+#[clap(author, version, about, long_about = None)]
+struct Args {
+    /// Image path
+    #[clap(short, long, value_parser)]
+    image: String,
+}
 
 #[derive(Debug, Error)]
 enum ErrorWrapper {
