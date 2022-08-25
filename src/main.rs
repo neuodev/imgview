@@ -1,13 +1,13 @@
 use clap::Parser;
-use image::ImageError;
+use image::{imageops, DynamicImage, ImageError};
 use pixels::{Pixels, SurfaceTexture};
 use thiserror::Error;
 use winit::{
     dpi::PhysicalSize,
     error::OsError,
-    event::{Event, KeyboardInput, WindowEvent},
+    event::{ElementState, Event, KeyboardInput, VirtualKeyCode, WindowEvent},
     event_loop::EventLoop,
-    window::{CursorIcon, WindowBuilder},
+    window::WindowBuilder,
 };
 
 const SCREEN_PERCENT: u32 = 90;
@@ -65,25 +65,16 @@ fn main() -> Result<(), ErrorWrapper> {
 
     let surface = SurfaceTexture::new(window_inner_size.width, window_inner_size.height, &window);
     let mut pixels = Pixels::new(img.width(), img.height(), surface)?;
-
     let img_bytes = img.as_mut_rgba8().unwrap().as_flat_samples();
     let img_bytes = img_bytes.as_slice();
 
     let pixels_bytes = pixels.get_frame();
-
-    img_bytes
-        .chunks_exact(4)
-        .zip(pixels_bytes.chunks_exact_mut(4))
-        .for_each(|(img, pixel)| {
-            pixel[0] = img[0];
-            pixel[1] = img[1];
-            pixel[2] = img[2];
-            pixel[3] = img[3];
-        });
+    img_bytes.into_iter().enumerate().for_each(|(idx, p)| {
+        pixels_bytes[idx] = *p;
+    });
 
     event_loop.run(move |event, _, control_flow| {
         control_flow.set_wait();
-        window.set_cursor_icon(CursorIcon::Grab);
         match event {
             Event::WindowEvent { window_id, event } if window_id == window.id() => match event {
                 WindowEvent::CloseRequested => {
@@ -99,9 +90,36 @@ fn main() -> Result<(), ErrorWrapper> {
                         },
                     ..
                 } => {
-                    println!("[{:?}] {:#?}", virtual_keycode, state)
+                    println!("[{:?}] {:#?}", virtual_keycode, state);
+                    if state == ElementState::Released || virtual_keycode.is_none() {
+                        return;
+                    }
+
+                    let new_img = match virtual_keycode.unwrap() {
+                        VirtualKeyCode::C => Some(img.fliph()),
+                        VirtualKeyCode::X => Some(img.flipv()),
+                        VirtualKeyCode::Z => Some(img.rotate180()),
+                        _ => None,
+                    };
+
+                    if new_img.is_none() {
+                        return;
+                    }
+
+                    img = new_img.unwrap();
+
+                    let img_bytes = img.as_mut_rgba8().unwrap().as_flat_samples();
+                    let img_bytes = img_bytes.as_slice();
+
+                    let pixels_bytes = pixels.get_frame();
+                    img_bytes.into_iter().enumerate().for_each(|(idx, p)| {
+                        pixels_bytes[idx] = *p;
+                    });
+
+                    pixels.render().unwrap();
                 }
                 WindowEvent::Resized(size) => {
+                    println!("[resize] {:?}", size);
                     resize(&mut pixels, &size);
                 }
                 _ => {}
