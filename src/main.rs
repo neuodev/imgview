@@ -1,3 +1,4 @@
+use thiserror::Error;
 use winit::{
     error::OsError,
     event::{Event, KeyboardInput, WindowEvent},
@@ -5,7 +6,13 @@ use winit::{
     window::{CursorIcon, WindowBuilder},
 };
 
-fn main() -> Result<(), OsError> {
+#[derive(Debug, Error)]
+enum ErrorWrapper {
+    #[error("Unable to create the main window")]
+    WindowError(#[from] OsError),
+}
+
+fn main() -> Result<(), ErrorWrapper> {
     let event_loop = EventLoop::new();
 
     let window = WindowBuilder::new()
