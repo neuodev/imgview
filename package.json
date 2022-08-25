@@ -1,0 +1,12 @@
+{
+  "name": "imgpre",
+  "version": "1.0.0",
+  "description": "Simple to use Image previewer",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cargo watch -x \"run --bin imgpre\"",
+    "fmt": "rustfmt ./src/main.rs"
+  },
+  "author": "Ahmed Ibrahim",
+  "license": "MIT"
+}
