@@ -1,5 +1,5 @@
 use clap::Parser;
-use image::{imageops, DynamicImage, ImageError};
+use image::ImageError;
 use pixels::{Pixels, SurfaceTexture};
 use thiserror::Error;
 use winit::{
