@@ -101,11 +101,8 @@ fn main() -> Result<(), ErrorWrapper> {
                 } => {
                     println!("[{:?}] {:#?}", virtual_keycode, state)
                 }
-                WindowEvent::ScaleFactorChanged {
-                    scale_factor,
-                    new_inner_size,
-                } => {
-                    println!("[scale-factor] {}", scale_factor)
+                WindowEvent::Resized(size) => {
+                    resize(&mut pixels, &size);
                 }
                 _ => {}
             },
@@ -123,4 +120,8 @@ fn calc_scale(max_size: u32, curr_size: u32) -> u32 {
     } else {
         (curr_size as f32 / max_size as f32).ceil() as u32
     }
+}
+
+fn resize(pixels: &mut Pixels, size: &PhysicalSize<u32>) {
+    pixels.resize_surface(size.width, size.height)
 }
