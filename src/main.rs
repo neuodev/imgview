@@ -1,4 +1,4 @@
-use clap::Parser;
+use clap::{Arg, Parser};
 use thiserror::Error;
 use winit::{
     error::OsError,
@@ -7,11 +7,12 @@ use winit::{
     window::{CursorIcon, WindowBuilder},
 };
 
+/// Simple program to view images
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
 struct Args {
     /// Image path
-    #[clap(short, long, value_parser)]
+    #[clap(short, long, value_parser, default_value = "grades.png")]
     image: String,
 }
 
@@ -22,10 +23,11 @@ enum ErrorWrapper {
 }
 
 fn main() -> Result<(), ErrorWrapper> {
+    let args = Args::parse();
+    // Load the image
     let event_loop = EventLoop::new();
-
     let window = WindowBuilder::new()
-        .with_title("ImgPre")
+        .with_title("Img Viewer")
         .build(&event_loop)?;
 
     event_loop.run(move |event, _, control_flow| {

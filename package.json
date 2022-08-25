@@ -4,7 +4,7 @@
   "description": "Simple to use Image previewer",
   "main": "index.js",
   "scripts": {
-    "dev": "cargo watch -x \"run --bin imgpre\"",
+    "dev": "cargo watch -x \"run --bin imgview\"",
     "fmt": "rustfmt ./src/main.rs"
   },
   "author": "Ahmed Ibrahim",
