@@ -3,10 +3,11 @@ name = "imgview"
 version = "0.1.0"
 edition = "2021"
 authors = ["Ahmed Ibrahim"]
-description = "An Image viewer"
+description = "An image viewer"
 
 [dependencies]
 winit = "0.27.2"
 thiserror = "1.0.32"
 clap ={version = "3.2.17", features=["derive"]}
 image = "0.24.3"
+pixels = "0.9.0"
