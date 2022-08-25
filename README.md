@@ -6,6 +6,8 @@ A simple image viewer
     <img src="./icon.gif" title="ImgView" alt="ImgView"/>
 </p>
 
+## Example
+
 <p align="center">
     <img src="./example.gif" title="ImgView" alt="ImgView"/>
 </p>
